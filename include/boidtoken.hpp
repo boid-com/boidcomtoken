@@ -28,7 +28,9 @@
 // #define TIME_MULT 86400 // seconds
 #define MICROSEC_MULT 1e6
 #define DAY_MICROSEC 86400e6
-#define TIME_CAP 3600000000
+// #define TIME_CAP 3600000000
+#define TIME_CAP 6048e8 //cap claim rewards by one week
+
 
 using namespace eosio;
 using std::string;
