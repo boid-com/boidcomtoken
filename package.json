@@ -1,0 +1,30 @@
+{
+  "name": "boidcomtoken",
+  "version": "1.0.0",
+  "description": "",
+  "main": ".env.js",
+  "directories": {
+    "test": "test/scenarios"
+  },
+  "dependencies": {
+    "boidjs": "^1.1.71",
+    "eosjs": "^20.0.3",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "ava": "^3.4.0"
+  },
+  "scripts": {
+    "test": "ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abrapidinnovation/boid-token.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abrapidinnovation/boid-token/issues"
+  },
+  "homepage": "https://github.com/abrapidinnovation/boid-token#readme"
+}

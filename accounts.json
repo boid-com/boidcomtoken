@@ -1,0 +1,8 @@
+{
+  "kylin":{
+    "token":"token.boid"
+  },
+  "local":{
+    "token":"boidcomtoken"
+  }
+}

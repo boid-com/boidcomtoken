@@ -1,0 +1,897 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
+    "version": "eosio::abi/1.1",
+    "types": [],
+    "structs": [
+        {
+            "name": "account",
+            "base": "",
+            "fields": [
+                {
+                    "name": "balance",
+                    "type": "asset"
+                }
+            ]
+        },
+        {
+            "name": "boidpower",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acct",
+                    "type": "name"
+                },
+                {
+                    "name": "quantity",
+                    "type": "float32"
+                }
+            ]
+        },
+        {
+            "name": "claim",
+            "base": "",
+            "fields": [
+                {
+                    "name": "stake_account",
+                    "type": "name"
+                },
+                {
+                    "name": "issuer_claim",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "clearpwrs",
+            "base": "",
+            "fields": [
+                {
+                    "name": "scope",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "clearstakes",
+            "base": "",
+            "fields": [
+                {
+                    "name": "scope",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "close",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "symbol",
+                    "type": "symbol"
+                }
+            ]
+        },
+        {
+            "name": "collectwpf",
+            "base": "",
+            "fields": []
+        },
+        {
+            "name": "create",
+            "base": "",
+            "fields": [
+                {
+                    "name": "issuer",
+                    "type": "name"
+                },
+                {
+                    "name": "maximum_supply",
+                    "type": "asset"
+                }
+            ]
+        },
+        {
+            "name": "currency_stat",
+            "base": "",
+            "fields": [
+                {
+                    "name": "supply",
+                    "type": "asset"
+                },
+                {
+                    "name": "max_supply",
+                    "type": "asset"
+                },
+                {
+                    "name": "issuer",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "delegations",
+            "base": "",
+            "fields": [
+                {
+                    "name": "from",
+                    "type": "name"
+                },
+                {
+                    "name": "to",
+                    "type": "name"
+                },
+                {
+                    "name": "quantity",
+                    "type": "asset"
+                },
+                {
+                    "name": "expiration",
+                    "type": "microseconds"
+                },
+                {
+                    "name": "trans_quantity",
+                    "type": "asset"
+                },
+                {
+                    "name": "trans_expiration",
+                    "type": "microseconds"
+                }
+            ]
+        },
+        {
+            "name": "initstats",
+            "base": "",
+            "fields": [
+                {
+                    "name": "wpf_reset",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "issue",
+            "base": "",
+            "fields": [
+                {
+                    "name": "to",
+                    "type": "name"
+                },
+                {
+                    "name": "quantity",
+                    "type": "asset"
+                },
+                {
+                    "name": "memo",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "matchtotdel",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "quantity",
+                    "type": "asset"
+                },
+                {
+                    "name": "subtract",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "microseconds",
+            "base": "",
+            "fields": [
+                {
+                    "name": "_count",
+                    "type": "int64"
+                }
+            ]
+        },
+        {
+            "name": "open",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "symbol",
+                    "type": "symbol"
+                },
+                {
+                    "name": "ram_payer",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "power",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acct",
+                    "type": "name"
+                },
+                {
+                    "name": "quantity",
+                    "type": "float32"
+                },
+                {
+                    "name": "total_power_bonus",
+                    "type": "asset"
+                },
+                {
+                    "name": "total_stake_bonus",
+                    "type": "asset"
+                },
+                {
+                    "name": "prev_claim_time",
+                    "type": "microseconds"
+                },
+                {
+                    "name": "prev_bp_update_time",
+                    "type": "microseconds"
+                },
+                {
+                    "name": "total_delegated",
+                    "type": "asset"
+                }
+            ]
+        },
+        {
+            "name": "recycle",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "quantity",
+                    "type": "asset"
+                }
+            ]
+        },
+        {
+            "name": "recyclewpf",
+            "base": "",
+            "fields": []
+        },
+        {
+            "name": "resetbonus",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "resetpowtm",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "bonus",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "sendmessage",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acct",
+                    "type": "name"
+                },
+                {
+                    "name": "memo",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "setbpconst",
+            "base": "",
+            "fields": [
+                {
+                    "name": "const_decay",
+                    "type": "float32"
+                }
+            ]
+        },
+        {
+            "name": "setbpdecay",
+            "base": "",
+            "fields": [
+                {
+                    "name": "decay",
+                    "type": "float32"
+                }
+            ]
+        },
+        {
+            "name": "setbpmult",
+            "base": "",
+            "fields": [
+                {
+                    "name": "update_exp",
+                    "type": "float32"
+                }
+            ]
+        },
+        {
+            "name": "setmaxpwrstk",
+            "base": "",
+            "fields": [
+                {
+                    "name": "percentage",
+                    "type": "float32"
+                }
+            ]
+        },
+        {
+            "name": "setmaxwpfpay",
+            "base": "",
+            "fields": [
+                {
+                    "name": "max_wpf_payout",
+                    "type": "asset"
+                }
+            ]
+        },
+        {
+            "name": "setminstake",
+            "base": "",
+            "fields": [
+                {
+                    "name": "min_stake",
+                    "type": "asset"
+                }
+            ]
+        },
+        {
+            "name": "setpower",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acct",
+                    "type": "name"
+                },
+                {
+                    "name": "boidpower",
+                    "type": "float32"
+                },
+                {
+                    "name": "reset_claim_time",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "setpowerdiff",
+            "base": "",
+            "fields": [
+                {
+                    "name": "power_difficulty",
+                    "type": "float32"
+                }
+            ]
+        },
+        {
+            "name": "setpowerrate",
+            "base": "",
+            "fields": [
+                {
+                    "name": "power_bonus_max_rate",
+                    "type": "float32"
+                }
+            ]
+        },
+        {
+            "name": "setpwrstkmul",
+            "base": "",
+            "fields": [
+                {
+                    "name": "powered_stake_multiplier",
+                    "type": "float32"
+                }
+            ]
+        },
+        {
+            "name": "setstakediff",
+            "base": "",
+            "fields": [
+                {
+                    "name": "stake_difficulty",
+                    "type": "float32"
+                }
+            ]
+        },
+        {
+            "name": "setwpfproxy",
+            "base": "",
+            "fields": [
+                {
+                    "name": "wpf_proxy",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "stake",
+            "base": "",
+            "fields": [
+                {
+                    "name": "from",
+                    "type": "name"
+                },
+                {
+                    "name": "to",
+                    "type": "name"
+                },
+                {
+                    "name": "quantity",
+                    "type": "asset"
+                },
+                {
+                    "name": "time_limit",
+                    "type": "uint32"
+                }
+            ]
+        },
+        {
+            "name": "stake_row",
+            "base": "",
+            "fields": [
+                {
+                    "name": "from",
+                    "type": "name"
+                },
+                {
+                    "name": "to",
+                    "type": "name"
+                },
+                {
+                    "name": "quantity",
+                    "type": "asset"
+                },
+                {
+                    "name": "my_bonus",
+                    "type": "asset"
+                },
+                {
+                    "name": "expiration",
+                    "type": "microseconds"
+                },
+                {
+                    "name": "prev_claim_time",
+                    "type": "microseconds"
+                },
+                {
+                    "name": "trans_quantity",
+                    "type": "asset"
+                },
+                {
+                    "name": "trans_expiration",
+                    "type": "microseconds"
+                },
+                {
+                    "name": "trans_prev_claim_time",
+                    "type": "microseconds"
+                }
+            ]
+        },
+        {
+            "name": "stakeconfig",
+            "base": "",
+            "fields": [
+                {
+                    "name": "config_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "stakebreak",
+                    "type": "uint8"
+                },
+                {
+                    "name": "bonus",
+                    "type": "asset"
+                },
+                {
+                    "name": "season_start",
+                    "type": "microseconds"
+                },
+                {
+                    "name": "total_season_bonus",
+                    "type": "asset"
+                },
+                {
+                    "name": "active_accounts",
+                    "type": "uint32"
+                },
+                {
+                    "name": "total_staked",
+                    "type": "asset"
+                },
+                {
+                    "name": "last_total_powered_stake",
+                    "type": "asset"
+                },
+                {
+                    "name": "total_boidpower",
+                    "type": "float32"
+                },
+                {
+                    "name": "stake_difficulty",
+                    "type": "float32"
+                },
+                {
+                    "name": "powered_stake_multiplier",
+                    "type": "float32"
+                },
+                {
+                    "name": "power_difficulty",
+                    "type": "float32"
+                },
+                {
+                    "name": "power_bonus_max_rate",
+                    "type": "float32"
+                },
+                {
+                    "name": "min_stake",
+                    "type": "asset"
+                },
+                {
+                    "name": "max_powered_stake_ratio",
+                    "type": "float32"
+                },
+                {
+                    "name": "max_wpf_payout",
+                    "type": "asset"
+                },
+                {
+                    "name": "worker_proposal_fund",
+                    "type": "asset"
+                },
+                {
+                    "name": "worker_proposal_fund_proxy",
+                    "type": "name"
+                },
+                {
+                    "name": "boidpower_decay_rate",
+                    "type": "float32"
+                },
+                {
+                    "name": "boidpower_update_mult",
+                    "type": "float32"
+                },
+                {
+                    "name": "boidpower_const_decay",
+                    "type": "float32"
+                }
+            ]
+        },
+        {
+            "name": "stakerow",
+            "base": "",
+            "fields": [
+                {
+                    "name": "stake_account",
+                    "type": "name"
+                },
+                {
+                    "name": "staked",
+                    "type": "asset"
+                },
+                {
+                    "name": "auto_stake",
+                    "type": "uint8"
+                }
+            ]
+        },
+        {
+            "name": "synctotdel",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "transfer",
+            "base": "",
+            "fields": [
+                {
+                    "name": "from",
+                    "type": "name"
+                },
+                {
+                    "name": "to",
+                    "type": "name"
+                },
+                {
+                    "name": "quantity",
+                    "type": "asset"
+                },
+                {
+                    "name": "memo",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "unstake",
+            "base": "",
+            "fields": [
+                {
+                    "name": "from",
+                    "type": "name"
+                },
+                {
+                    "name": "to",
+                    "type": "name"
+                },
+                {
+                    "name": "quantity",
+                    "type": "asset"
+                }
+            ]
+        },
+        {
+            "name": "updatepower",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acct",
+                    "type": "name"
+                },
+                {
+                    "name": "boidpower",
+                    "type": "float32"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "name": "claim",
+            "type": "claim",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "clearpwrs",
+            "type": "clearpwrs",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "clearstakes",
+            "type": "clearstakes",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "close",
+            "type": "close",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "collectwpf",
+            "type": "collectwpf",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "create",
+            "type": "create",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "initstats",
+            "type": "initstats",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "issue",
+            "type": "issue",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "matchtotdel",
+            "type": "matchtotdel",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "open",
+            "type": "open",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "recycle",
+            "type": "recycle",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "recyclewpf",
+            "type": "recyclewpf",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "resetbonus",
+            "type": "resetbonus",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "resetpowtm",
+            "type": "resetpowtm",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "sendmessage",
+            "type": "sendmessage",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setbpconst",
+            "type": "setbpconst",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setbpdecay",
+            "type": "setbpdecay",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setbpmult",
+            "type": "setbpmult",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setmaxpwrstk",
+            "type": "setmaxpwrstk",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setmaxwpfpay",
+            "type": "setmaxwpfpay",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setminstake",
+            "type": "setminstake",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setpower",
+            "type": "setpower",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setpowerdiff",
+            "type": "setpowerdiff",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setpowerrate",
+            "type": "setpowerrate",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setpwrstkmul",
+            "type": "setpwrstkmul",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setstakediff",
+            "type": "setstakediff",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setwpfproxy",
+            "type": "setwpfproxy",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "stake",
+            "type": "stake",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "synctotdel",
+            "type": "synctotdel",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "transfer",
+            "type": "transfer",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "unstake",
+            "type": "unstake",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "updatepower",
+            "type": "updatepower",
+            "ricardian_contract": ""
+        }
+    ],
+    "tables": [
+        {
+            "name": "accounts",
+            "type": "account",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "boidpowers",
+            "type": "boidpower",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "delegation",
+            "type": "delegations",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "powers",
+            "type": "power",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "stakeconfigs",
+            "type": "stakeconfig",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "staked",
+            "type": "stake_row",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "stakes",
+            "type": "stakerow",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "stat",
+            "type": "currency_stat",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "ricardian_clauses": [],
+    "variants": []
+}
