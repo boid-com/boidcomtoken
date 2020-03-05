@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": ".env.js",
-  "directories": {
-    "test": "test/scenarios"
-  },
+
   "dependencies": {
     "boidjs": "^1.1.71",
     "eosjs": "^20.0.3",
@@ -15,7 +13,7 @@
     "ava": "^3.4.0"
   },
   "scripts": {
-    "test": "ava"
+    "test": ""
   },
   "repository": {
     "type": "git",

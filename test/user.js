@@ -128,7 +128,7 @@ async function transfer () {
           data: {
             from: 'boid',
             to: 'itsdumb',
-            quantity: '1.0000 BOID',
+            quantity: '1`.0000 BOID',
             time_limit: 0,
             memo: 'trnsfr'
           }
