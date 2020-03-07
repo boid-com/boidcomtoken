@@ -108,10 +108,14 @@ ACTION boidtoken::close(const name &owner, const symbol &symbol) {
 };
 
 ACTION boidtoken::transfer(name from, name to, asset quantity, string memo) {
-  print("transfer\n");
+  print("-", "\n");
+  print("TRANSFER", "\n");
+  print("-", "\n");
+
   check(from != to, "cannot transfer to self");
   require_auth(from);
   check(is_account(to), "to account does not exist");
+
   auto sym = quantity.symbol;
   stats statstable(_self, sym.code().raw());
   const auto &st = statstable.get(sym.code().raw());
@@ -154,13 +158,10 @@ ACTION boidtoken::stake(name from, name to, asset quantity, uint32_t time_limit)
 
   const auto &st = statstable.get(sym.code().raw());
   check(quantity.symbol == st.supply.symbol, "symbol precision mismatch");
-
   power_t p_from_t(get_self(), from.value), p_to_t(get_self(), to.value);
   auto p_from_itr = p_from_t.find(from.value), p_to_itr = p_to_t.find(to.value);
-
   if (p_from_itr == p_from_t.end() || p_from_itr->total_delegated.symbol != sym) sync_total_delegated(from, from);
   if (from != to && (p_to_itr == p_to_t.end() || p_to_itr->total_delegated.symbol != sym)) sync_total_delegated(to, from);
-
   delegation_t deleg_t(get_self(), from.value);
   auto deleg = deleg_t.find(from.value);
   asset available = asset{0, sym};
@@ -182,8 +183,10 @@ ACTION boidtoken::stake(name from, name to, asset quantity, uint32_t time_limit)
   accounts accts(get_self(), from.value);
   const auto &acct = accts.get(quantity.symbol.code().raw(), "No account object found.");
   check(quantity <= acct.balance, "Staking more than available liquid balance.");
+  print("stake8", "\n");
 
   add_stake(from, to, quantity, expiration_time, from);
+  print("stake9", "\n");
 
   account_type = "liquid";
 
@@ -234,7 +237,8 @@ ACTION boidtoken::claim(name stake_account, bool issuer_claim) {
   else
     require_auth(stake_account);
 
-  asset zerotokens = asset{0, sym}, total_payout = zerotokens, power_payout = zerotokens, stake_payout = zerotokens, wpf_payout = zerotokens, powered_stake = zerotokens, expired_received_tokens = zerotokens, expired_delegated_tokens = zerotokens;
+  asset zerotokens = asset{0, sym}, total_payout = zerotokens, power_payout = zerotokens, stake_payout = zerotokens, wpf_payout = zerotokens, powered_stake = zerotokens,
+        expired_received_tokens = zerotokens, expired_delegated_tokens = zerotokens;
 
   name ram_payer = issuer_claim ? st.issuer : stake_account;
 
@@ -303,7 +307,8 @@ ACTION boidtoken::claim(name stake_account, bool issuer_claim) {
 
     total_payout += power_payout;
 
-    string debugStr = "Payout would cause token supply to exceed maximum\nstake account: " + stake_account.to_string() + "\ntotal payout: " + total_payout.to_string() + "\npower payout: " + power_payout.to_string() + "\nstake payout: " + stake_payout.to_string();
+    string debugStr = "Payout would cause token supply to exceed maximum\nstake account: " + stake_account.to_string() + "\ntotal payout: " + total_payout.to_string() +
+                      "\npower payout: " + power_payout.to_string() + "\nstake payout: " + stake_payout.to_string();
 
     check(total_payout <= existing->max_supply - existing->supply, debugStr);
 
@@ -311,7 +316,9 @@ ACTION boidtoken::claim(name stake_account, bool issuer_claim) {
 
     asset self_payout = power_payout + stake_payout;
 
-    string memo = "account:  " + stake_account.to_string() + "\naction: claim" + "\nstake bonus: " + stake_payout.to_string() + "\npower bonus: " + power_payout.to_string() + "\nwpf contribution: " + wpf_payout.to_string() + "\nreturning " + expired_received_tokens.to_string() + " expired tokens" + "\nreceiving " + expired_delegated_tokens.to_string() + " delegated tokens";
+    string memo = "account:  " + stake_account.to_string() + "\naction: claim" + "\nstake bonus: " + stake_payout.to_string() + "\npower bonus: " + power_payout.to_string() +
+                  "\nwpf contribution: " + wpf_payout.to_string() + "\nreturning " + expired_received_tokens.to_string() + " expired tokens" + "\nreceiving " + expired_delegated_tokens.to_string() +
+                  " delegated tokens";
 
     if (self_payout.amount != 0) {
       action(permission_level{st.issuer, "active"_n}, get_self(), "issue"_n, std::make_tuple(stake_account, self_payout, memo)).send();
@@ -628,6 +635,22 @@ ACTION boidtoken::setbpdecay(const float decay) {
   c_t.modify(c_itr, _self, [&](auto &c) { c.boidpower_decay_rate = decay; });
 }
 
+ACTION boidtoken::settotactive(const uint32_t active_accounts) {
+  require_auth(get_self());
+  config_t c_t(_self, _self.value);
+  auto c_itr = c_t.find(0);
+  check(c_itr != c_t.end(), "Must first initstats");
+  c_t.modify(c_itr, _self, [&](auto &c) { c.active_accounts = active_accounts; });
+}
+
+ACTION boidtoken::settotstaked(const asset total_staked) {
+  require_auth(get_self());
+  config_t c_t(_self, _self.value);
+  auto c_itr = c_t.find(0);
+  check(c_itr != c_t.end(), "Must first initstats");
+  c_t.modify(c_itr, _self, [&](auto &c) { c.total_staked = total_staked; });
+}
+
 ACTION boidtoken::setbpmult(const float update_mult) {
   require_auth(get_self());
   config_t c_t(_self, _self.value);
@@ -691,23 +714,29 @@ void boidtoken::add_balance(name owner, asset value, name ram_payer) {
 void boidtoken::sub_stake(name from, name to, asset quantity, name ram_payer) {
   delegation_t deleg_t(get_self(), from.value);
   auto deleg = deleg_t.find(to.value);
-  check(deleg != deleg_t.end(), "Delegation does not exist");
+  check(deleg != deleg_t.end(), "Specified delegation does not exist.");
 
   stake_t s_t(get_self(), to.value);
   auto to_itr = s_t.find(from.value);
-  check(to_itr != s_t.end(), "Stake does not exist");
+  check(to_itr != s_t.end(), "Specified stake does not exist.");
 
   asset curr_delegated_to = to_itr->quantity;
   asset after_delegated_to = curr_delegated_to - quantity;
 
   config_t c_t(get_self(), get_self().value);
   auto c_itr = c_t.find(0);
-  check(after_delegated_to.amount >= 0, "final delegation should be 0 or greater");
+  check(after_delegated_to.amount >= 0, "Final delegation should be 0 or greater.");
 
   sub_total_delegated(from, quantity, from);
 
-  deleg_t.modify(deleg, ram_payer, [&](auto &d) { d.quantity = after_delegated_to; });
-  s_t.modify(to_itr, ram_payer, [&](auto &s) { s.quantity = after_delegated_to; });
+  if (after_delegated_to.amount == 0) {
+    deleg_t.erase(deleg);
+    s_t.erase(to_itr);
+  } else {
+    deleg_t.modify(deleg, ram_payer, [&](auto &d) { d.quantity = after_delegated_to; });
+    s_t.modify(to_itr, ram_payer, [&](auto &s) { s.quantity = after_delegated_to; });
+  }
+
   c_t.modify(c_itr, get_self(), [&](auto &c) {
     if (after_delegated_to.amount == 0) c.active_accounts -= 1;
     c.total_staked -= quantity;
@@ -886,7 +915,7 @@ asset boidtoken::get_total_delegated(name account, bool iterate) {
 void boidtoken::sync_total_delegated(name account, name ram_payer) {
   asset total_delegated = get_total_delegated(account, true);
 
-  power_t p_t(_self, account.value);
+  power_t p_t(get_self(), account.value);
   auto p_itr = p_t.find(account.value);
 
   if (p_itr != p_t.end()) {
@@ -924,8 +953,9 @@ extern "C" {
 [[noreturn]] void apply(uint64_t receiver, uint64_t code, uint64_t action) {
   if (code == receiver) {
     switch (action) {
-      EOSIO_DISPATCH_HELPER(boidtoken, (create)(issue)(recycle)(clearpwrs)(clearstakes)
-                            (open)(close)(transfer)(stake)(sendmessage)(claim)(unstake)(initstats)(updatepower)(setpower)(matchtotdel)(synctotdel)(setstakediff)(setpowerdiff)(setpowerrate)(setpwrstkmul)(setminstake)(setmaxpwrstk)(setmaxwpfpay)(setwpfproxy)(collectwpf)(recyclewpf)(setbpdecay)(setbpmult)(setbpconst)(resetbonus)(resetpowtm))
+      EOSIO_DISPATCH_HELPER(boidtoken, (create)(issue)(recycle)(clearpwrs)(clearstakes)(open)(close)(transfer)(stake)(sendmessage)(claim)(unstake)(initstats)(updatepower)(setpower)(matchtotdel)(
+                                           synctotdel)(setstakediff)(setpowerdiff)(setpowerrate)(setpwrstkmul)(setminstake)(setmaxpwrstk)(setmaxwpfpay)(setwpfproxy)(collectwpf)(recyclewpf)(
+                                           setbpdecay)(setbpmult)(setbpconst)(resetbonus)(resetpowtm)(settotactive)(settotstaked))
     }
   }
   eosio_exit(0);

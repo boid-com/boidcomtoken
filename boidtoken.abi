@@ -426,6 +426,26 @@
             ]
         },
         {
+            "name": "settotactive",
+            "base": "",
+            "fields": [
+                {
+                    "name": "active_accounts",
+                    "type": "uint32"
+                }
+            ]
+        },
+        {
+            "name": "settotstaked",
+            "base": "",
+            "fields": [
+                {
+                    "name": "total_staked",
+                    "type": "asset"
+                }
+            ]
+        },
+        {
             "name": "setwpfproxy",
             "base": "",
             "fields": [
@@ -801,6 +821,16 @@
         {
             "name": "setstakediff",
             "type": "setstakediff",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "settotactive",
+            "type": "settotactive",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "settotstaked",
+            "type": "settotstaked",
             "ricardian_contract": ""
         },
         {

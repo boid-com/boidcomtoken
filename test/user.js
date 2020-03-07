@@ -113,11 +113,11 @@ async function transstake () {
   }
 }
 
-async function transfer () {
+async function transfer (from,to,quantity) {
   try {
+    quantity = parseFloat(quantity).toFixed(4) + " BOID"
     const contract = acct('token')
-    const toAccount = 'boid'
-    const authorization = [{ actor: toAccount, permission: 'active' }]
+    const authorization = [{ actor: from, permission: 'active' }]
     const account = contract
     const result = await api.transact({
       actions: [
@@ -126,20 +126,19 @@ async function transfer () {
           authorization,
           name: 'transfer',
           data: {
-            from: 'boid',
-            to: 'itsdumb',
-            quantity: '1`.0000 BOID',
-            time_limit: 0,
+            from,
+            to,
+            quantity,
             memo: 'trnsfr'
           }
         }
       ]
     }, tapos)
     console.log(result.transaction_id)
-    const bal = await boidjs.get.balance(toAccount)
-    console.log('current balance:', parseFloat(bal))
-    const stakes = await boidjs.get.stakes(toAccount)
-    console.log('Stakes:', stakes)
+    const bal = await boidjs.get.balance(from)
+    console.log('From balance:', parseFloat(bal))
+    const bal2 = await boidjs.get.balance(to)
+    console.log('To balance:', parseFloat(bal2))
   } catch (error) {
     return Promise.reject(error.toString())
   }
