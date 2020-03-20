@@ -14,6 +14,8 @@
 #include <eosio/symbol.hpp>
 #include <eosio/system.hpp>
 #include <eosio/time.hpp>
+#include <eosio/check.hpp>
+
 
 #define STAKE_ADD 0
 #define STAKE_SUB 1
@@ -27,18 +29,17 @@
 #define TIME_MULT 1  // seconds
 // #define TIME_MULT 86400 // seconds
 #define MICROSEC_MULT 1e6
-#define DAY_MICROSEC 86400e6
+// #define DAY_MICROSEC 86400e6
+#define DAY_MICROSEC 6e7
 // #define TIME_CAP 3600000000
-#define TIME_CAP 6048e8  // cap claim rewards by one week
+#define TIME_CAP (DAY_MICROSEC * 7)  // cap claim rewards by one week
 
 using namespace eosio;
 using std::string;
-// using std::vector;
 using eosio::check;
 using eosio::const_mem_fun;
 using eosio::microseconds;
 using eosio::time_point;
-using std::set;
 
 CONTRACT boidtoken : public contract {
  public:
@@ -56,13 +57,16 @@ CONTRACT boidtoken : public contract {
 
   ACTION transfer(name from, name to, asset quantity, string memo);
 
-  ACTION stake(name from, name to, asset quantity, uint32_t time_limit);
+  ACTION stake(name from, name to, asset quantity, uint32_t time_limit, bool use_staked_balance);
 
   ACTION sendmessage(name acct, string memo);
 
-  ACTION claim(name stake_account, bool issuer_claim);
+  ACTION claim(name stake_account, float percentage_to_stake, bool issuer_claim);
 
-  ACTION unstake(name from, name to, asset quantity);
+  ACTION unstake(name from, name to, asset quantity,uint32_t time_limit,
+  bool to_staked_balance,
+  bool issuer_unstake,
+  bool transfer );
 
   ACTION initstats(bool wpf_reset);
 
@@ -90,10 +94,6 @@ CONTRACT boidtoken : public contract {
 
   ACTION setwpfproxy(const name wpf_proxy);
 
-  ACTION collectwpf();
-
-  ACTION recyclewpf();
-
   ACTION setbpdecay(const float decay);
 
   ACTION setbpmult(const float update_exp);
@@ -107,12 +107,12 @@ CONTRACT boidtoken : public contract {
   ACTION settotactive(const uint32_t active_accounts);
 
   ACTION settotstaked(const asset total_staked);
-
+  ACTION closepwr(const name acct, const bool admin_auth);
   // Temp Dev Actions
 
-  ACTION clearstakes(name scope);
-  ACTION clearpwrs(name scope);
-
+  ACTION clearstakes(uint32_t rows);
+  ACTION clearpwrs(uint32_t rows);
+  ACTION reclaim(name acct, asset quantity);
 
 
 

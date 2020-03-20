@@ -6,7 +6,7 @@ const tapos = { blocksBehind: 6, expireSeconds: 60 }
 
 const targetAccount = 'boid'
 
-async function issueTokens (targetAccount, amount) {
+async function issue (targetAccount, amount) {
   try {
     const quantity = parseFloat(amount).toFixed(4) + ' BOID'
     console.log(quantity)
@@ -110,7 +110,7 @@ async function unstake () {
   }
 }
 
-const methods = { issueTokens, setPower, claimForUser, unstake, updatePower }
+const methods = { issue, setPower, claimForUser, unstake, updatePower }
 
 module.exports = methods
 

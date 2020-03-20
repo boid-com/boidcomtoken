@@ -17,7 +17,7 @@ async function claim (targetAccount) {
   try {
     const result = await api.transact({
       actions: [
-        { account, authorization, name: 'claim', data: { stake_account: targetAccount, issuer_claim: false } }
+        { account, authorization, name: 'claim', data: { stake_account: targetAccount, issuer_claim: false,percentage_to_stake:0 } }
       ]
     }, tapos)
     console.log(result.transaction_id)
@@ -39,7 +39,7 @@ async function stake (from, to, quantity, time_limit) {
     const authorization = [{ actor: from, permission: 'active' }]
     const account = acct('token')
     quantity = parseFloat(quantity).toFixed(4) + ' BOID'
-    const actions = [{ account, authorization, name: 'stake', data: { from, to, quantity, time_limit } }]
+    const actions = [{ account, authorization, name: 'stake', data: { from, to, quantity, time_limit,use_staked_balance:false } }]
     const result = await api.transact({ actions }, tapos)
     console.log(result.transaction_id)
     const powers = await boidjs.get.powerStats(from)
@@ -68,7 +68,7 @@ async function unstake (from, to, quantity, time_limit, transfer) {
           account,
           authorization,
           name: 'unstake',
-          data: { from, to, quantity, time_limit, issuer_unstake: false, transfer }
+          data: { from, to, quantity, time_limit, issuer_unstake: false, transfer, to_staked_balance:false }
         }
       ]
     }, tapos)

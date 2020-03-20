@@ -36,6 +36,10 @@
                     "type": "name"
                 },
                 {
+                    "name": "percentage_to_stake",
+                    "type": "float32"
+                },
+                {
                     "name": "issuer_claim",
                     "type": "bool"
                 }
@@ -46,8 +50,8 @@
             "base": "",
             "fields": [
                 {
-                    "name": "scope",
-                    "type": "name"
+                    "name": "rows",
+                    "type": "uint32"
                 }
             ]
         },
@@ -56,8 +60,8 @@
             "base": "",
             "fields": [
                 {
-                    "name": "scope",
-                    "type": "name"
+                    "name": "rows",
+                    "type": "uint32"
                 }
             ]
         },
@@ -76,9 +80,18 @@
             ]
         },
         {
-            "name": "collectwpf",
+            "name": "closepwr",
             "base": "",
-            "fields": []
+            "fields": [
+                {
+                    "name": "acct",
+                    "type": "name"
+                },
+                {
+                    "name": "admin_auth",
+                    "type": "bool"
+                }
+            ]
         },
         {
             "name": "create",
@@ -251,6 +264,20 @@
             ]
         },
         {
+            "name": "reclaim",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acct",
+                    "type": "name"
+                },
+                {
+                    "name": "quantity",
+                    "type": "asset"
+                }
+            ]
+        },
+        {
             "name": "recycle",
             "base": "",
             "fields": [
@@ -263,11 +290,6 @@
                     "type": "asset"
                 }
             ]
-        },
-        {
-            "name": "recyclewpf",
-            "base": "",
-            "fields": []
         },
         {
             "name": "resetbonus",
@@ -474,6 +496,10 @@
                 {
                     "name": "time_limit",
                     "type": "uint32"
+                },
+                {
+                    "name": "use_staked_balance",
+                    "type": "bool"
                 }
             ]
         },
@@ -674,6 +700,22 @@
                 {
                     "name": "quantity",
                     "type": "asset"
+                },
+                {
+                    "name": "time_limit",
+                    "type": "uint32"
+                },
+                {
+                    "name": "to_staked_balance",
+                    "type": "bool"
+                },
+                {
+                    "name": "issuer_unstake",
+                    "type": "bool"
+                },
+                {
+                    "name": "transfer",
+                    "type": "bool"
                 }
             ]
         },
@@ -714,8 +756,8 @@
             "ricardian_contract": ""
         },
         {
-            "name": "collectwpf",
-            "type": "collectwpf",
+            "name": "closepwr",
+            "type": "closepwr",
             "ricardian_contract": ""
         },
         {
@@ -744,13 +786,13 @@
             "ricardian_contract": ""
         },
         {
-            "name": "recycle",
-            "type": "recycle",
+            "name": "reclaim",
+            "type": "reclaim",
             "ricardian_contract": ""
         },
         {
-            "name": "recyclewpf",
-            "type": "recyclewpf",
+            "name": "recycle",
+            "type": "recycle",
             "ricardian_contract": ""
         },
         {

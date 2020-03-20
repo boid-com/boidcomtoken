@@ -36,7 +36,7 @@ async function init (targetUser) {
     balance = await boidjs.get.balance(targetUser)
     console.log('Balance after claim:', balance)
     // return
-    await contract.issueTokens(targetUser, 10e+6)
+    await contract.issue(targetUser, 10e+6)
     await user.stake(targetUser, targetUser, 6e+6, 0)
     await user.stake(targetUser, 'boid', 1e+6, 0)
     stake = await boidjs.get.stakes(targetUser)

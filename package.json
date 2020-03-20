@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": ".env.js",
-
   "dependencies": {
     "boidjs": "^1.1.71",
     "eosjs": "^20.0.3",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "randomstring": "^1.1.5"
   },
   "devDependencies": {
     "ava": "^3.4.0"

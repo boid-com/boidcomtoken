@@ -141,8 +141,9 @@ ACTION boidtoken::transfer(name from, name to, asset quantity, string memo) {
   add_balance(to, quantity, from);
 };
 
-ACTION boidtoken::stake(name from, name to, asset quantity, uint32_t time_limit) {
+ACTION boidtoken::stake(name from, name to, asset quantity, uint32_t time_limit, bool use_staked_balance) {
   require_auth(from);
+  check(use_staked_balance == false,"use_staked_balance is deprecated and will be removed in the future.");
 
   config_t c_t(get_self(), get_self().value);
 
@@ -190,10 +191,11 @@ ACTION boidtoken::stake(name from, name to, asset quantity, uint32_t time_limit)
 
   account_type = "liquid";
 
+
   memo = "account:  " + from.to_string() + " using " + account_type +
-         " balance"
-         "\naction: stake" +
-         "\ndelegate: " + to.to_string() + " " + "\namount: " + quantity.to_string() + " " + "\ntimeout " + std::to_string(time_limit) + " seconds";
+        " balance"
+        "\naction: stake" +
+        "\ndelegate: " + to.to_string() + " " + "\namount: " + quantity.to_string() + " " + "\ntimeout " + std::to_string(time_limit) + " seconds";
 
   action(permission_level{from, "active"_n}, get_self(), "sendmessage"_n, std::make_tuple(from, memo)).send();
 };
@@ -204,18 +206,22 @@ ACTION boidtoken::sendmessage(name acct, string memo) {
   print(memo);
 };
 
-ACTION boidtoken::clearstakes(name scope) {
+ACTION boidtoken::clearstakes(uint32_t rows) {
   require_auth(get_self());
-  cleanTable<staketable>(get_self(), scope.value, 20);
+  cleanTable<staketable>(get_self(), get_self().value, rows);
 };
 
-ACTION boidtoken::clearpwrs(name scope) {
+ACTION boidtoken::clearpwrs(uint32_t rows) {
   require_auth(get_self());
-  cleanTable<boidpowers>(get_self(), scope.value, 20);
+  cleanTable<boidpowers>(get_self(), get_self().value, rows);
 };
 
-ACTION boidtoken::claim(name stake_account, bool issuer_claim) {
-  print("claim \n");
+ACTION boidtoken::claim(name stake_account, float percentage_to_stake, bool issuer_claim) {
+  check(percentage_to_stake == 0,"percentage_to_stake is deprecated: set to 0");
+  print(" \n");
+  print("CLAIM \n");
+  print(" \n");
+
   config_t c_t(get_self(), get_self().value);
   auto c_itr = c_t.find(0);
   check(c_itr != c_t.end(), "Must first initstats");
@@ -248,14 +254,21 @@ ACTION boidtoken::claim(name stake_account, bool issuer_claim) {
   if (bp == pow_t.end() || bp->total_delegated.symbol != sym) sync_total_delegated(stake_account, ram_payer);
 
   bp = pow_t.find(stake_account.value);
-  print("Existing Boid Power:", bp->quantity, "\n");
+  print("Existing Boid Power: ", bp->quantity, "\n");
 
   time_point t = current_time_point();
-
+  float boidpower = bp->quantity;
   microseconds curr_time = t.time_since_epoch(), start_time = microseconds(0), claim_time = microseconds(0), self_expiration = microseconds(0), zeroseconds = microseconds(0);
-
-  float boidpower = update_boidpower(bp->quantity, 0, (curr_time - bp->prev_bp_update_time).count());
-  print("New Boid Power:", boidpower, "\n");
+  
+  microseconds timediff = curr_time - bp->prev_bp_update_time;
+  bool skip_pwr_update = boidpower < 1;
+  if (!skip_pwr_update) {
+    print("boidpower: ",boidpower,"\n");
+    print("timediff: ",timediff.count(),"\n");
+    print("if statement: ",timediff.count() > DAY_MICROSEC);
+    boidpower = update_boidpower(bp->quantity, 0, timediff.count());
+    print("New Boid Power:", boidpower, "\n");
+  } else print("skipping power update.\n");
 
   stake_t s_t(get_self(), stake_account.value);
   auto self_stake = s_t.find(stake_account.value);
@@ -307,18 +320,18 @@ ACTION boidtoken::claim(name stake_account, bool issuer_claim) {
 
     total_payout += power_payout;
 
-    string debugStr = "Payout would cause token supply to exceed maximum\nstake account: " + stake_account.to_string() + "\ntotal payout: " + total_payout.to_string() +
-                      "\npower payout: " + power_payout.to_string() + "\nstake payout: " + stake_payout.to_string();
+string debugStr = "Payout would cause token supply to exceed maximum\nstake account: " + stake_account.to_string() + "\ntotal payout: " + total_payout.to_string() +
+                  "\npower payout: " + power_payout.to_string() + "\nstake payout: " + stake_payout.to_string();
 
-    check(total_payout <= existing->max_supply - existing->supply, debugStr);
+    check(total_payout <= existing->max_supply - existing->supply, debugStr.c_str());
 
     check(total_payout.amount >= 0 && power_payout.amount >= 0 && stake_payout.amount >= 0 && wpf_payout.amount >= 0, "All payouts must be zero or positive quantities");
 
     asset self_payout = power_payout + stake_payout;
 
     string memo = "account:  " + stake_account.to_string() + "\naction: claim" + "\nstake bonus: " + stake_payout.to_string() + "\npower bonus: " + power_payout.to_string() +
-                  "\nwpf contribution: " + wpf_payout.to_string() + "\nreturning " + expired_received_tokens.to_string() + " expired tokens" + "\nreceiving " + expired_delegated_tokens.to_string() +
-                  " delegated tokens";
+        "\nwpf contribution: " + wpf_payout.to_string() + "\nreturning " + expired_received_tokens.to_string() + " expired tokens" + "\nreceiving " + expired_delegated_tokens.to_string() +
+        " delegated tokens";
 
     if (self_payout.amount != 0) {
       action(permission_level{st.issuer, "active"_n}, get_self(), "issue"_n, std::make_tuple(stake_account, self_payout, memo)).send();
@@ -339,7 +352,58 @@ ACTION boidtoken::claim(name stake_account, bool issuer_claim) {
   }
 }
 
-ACTION boidtoken::unstake(name from, name to, asset quantity) {
+ACTION boidtoken::closepwr(const name acct, const bool admin_auth) {
+  if (!admin_auth) require_auth(acct);
+  else require_auth(get_self());
+  power_t pow_t(get_self(), acct.value);
+  auto bp = pow_t.find(acct.value);
+  check(bp == pow_t.end(),"No power row to close for this account.")
+  check(bp->quantity == 0 || bp->total_delegated.amount == 0,"acct has power or delegations, won't close.");
+  pow_t.erase(bp);
+}
+
+ACTION boidtoken::reclaim(name acct, asset quantity){
+  require_auth(get_self());
+
+  power_t pow_t(get_self(), acct.value);
+  auto bp = pow_t.find(acct.value);
+  check(bp == pow_t.end() || bp->quantity == 0 || bp->total_delegated.amount == 0,"acct has power or delegations, won't reclaim.");
+  pow_t.erase(bp);
+
+  accounts accts(get_self(), acct.value);
+  auto it = accts.find(quantity.symbol.code().raw());
+  check(it != accts.end(), "Account doesn't exist");
+
+  asset acctBal = get_balance(acct);
+
+  check(acctBal == quantity,"Quantity must match acct balance.");
+
+  accts.modify(it, same_payer, [&](auto &a) { a.balance -= quantity; });
+  accts.erase(it);
+
+  stats statstable(_self, quantity.symbol.code().raw());
+  auto existing = statstable.find(quantity.symbol.code().raw());
+  check(existing != statstable.end(), "symbol does not exist in stats table");
+  const auto &st = *existing;
+
+  statstable.modify(st, _self, [&](auto &s) {
+    s.supply -= quantity;
+
+    if (s.supply.amount < 0) {
+      print("Warning: recycle sets supply below 0. Please check this out. Setting supply to 0");
+      s.supply = asset{0, quantity.symbol};
+    }
+  });
+}
+
+ACTION boidtoken::unstake(name from, name to, asset quantity,uint32_t time_limit,
+bool to_staked_balance,
+bool issuer_unstake,
+bool transfer ) {
+  check(transfer == false, "transfer unstake is deprecated");
+  check(to_staked_balance == false, "to_staked_balance is deprecated");
+  check(issuer_unstake == false, "issuer_unstake is deprecated");
+
   config_t c_t(get_self(), get_self().value);
   auto c_itr = c_t.find(0);
   check(c_itr != c_t.end(), "Must first initstats");
@@ -591,40 +655,6 @@ ACTION boidtoken::setwpfproxy(const name wpf_proxy) {
   auto c_itr = c_t.find(0);
   check(c_itr != c_t.end(), "Must first initstats");
   c_t.modify(c_itr, _self, [&](auto &c) { c.worker_proposal_fund_proxy = wpf_proxy; });
-}
-
-ACTION boidtoken::collectwpf() {
-  require_auth(get_self());
-  config_t c_t(_self, _self.value);
-  auto c_itr = c_t.find(0);
-  check(c_itr != c_t.end(), "Must first initstats");
-  add_balance(c_itr->worker_proposal_fund_proxy, c_itr->worker_proposal_fund, get_self());
-  c_t.modify(c_itr, _self, [&](auto &c) { c.worker_proposal_fund -= c.worker_proposal_fund; });
-}
-
-ACTION boidtoken::recyclewpf() {
-  require_auth(get_self());
-
-  config_t c_t(_self, _self.value);
-  auto c_itr = c_t.find(0);
-  check(c_itr != c_t.end(), "Must first initstats");
-
-  symbol sym = symbol("BOID", 4);
-  stats statstable(_self, sym.code().raw());
-  auto existing = statstable.find(sym.code().raw());
-  check(existing != statstable.end(), "symbol does not exist in stats table");
-  const auto &st = *existing;
-
-  require_auth(st.issuer);
-
-  statstable.modify(st, _self, [&](auto &s) {
-    s.supply -= c_itr->worker_proposal_fund;
-    if (s.supply.amount < 0) {
-      print("Warning: recycle sets   supply below 0. Please check this out. Setting supply to 0");
-      s.supply = asset{0, sym};
-    }
-  });
-  c_t.modify(c_itr, _self, [&](auto &c) { c.worker_proposal_fund -= c.worker_proposal_fund; });
 }
 
 ACTION boidtoken::setbpdecay(const float decay) {
@@ -954,8 +984,8 @@ extern "C" {
   if (code == receiver) {
     switch (action) {
       EOSIO_DISPATCH_HELPER(boidtoken, (create)(issue)(recycle)(clearpwrs)(clearstakes)(open)(close)(transfer)(stake)(sendmessage)(claim)(unstake)(initstats)(updatepower)(setpower)(matchtotdel)(
-                                           synctotdel)(setstakediff)(setpowerdiff)(setpowerrate)(setpwrstkmul)(setminstake)(setmaxpwrstk)(setmaxwpfpay)(setwpfproxy)(collectwpf)(recyclewpf)(
-                                           setbpdecay)(setbpmult)(setbpconst)(resetbonus)(resetpowtm)(settotactive)(settotstaked))
+                                           synctotdel)(setstakediff)(setpowerdiff)(setpowerrate)(setpwrstkmul)(setminstake)(setmaxpwrstk)(setmaxwpfpay)(setwpfproxy)(
+                                           setbpdecay)(setbpmult)(setbpconst)(resetbonus)(resetpowtm)(settotactive)(settotstaked)(reclaim)(closepwr))
     }
   }
   eosio_exit(0);

@@ -1,0 +1,1 @@
+cleos -u https://eos.eoscafeblock.com push transaction '{"delay_sec":0,"max_cpu_usage_ms":0,"actions":[{"account":"boidcronjobs","name":"autoclaim","data":{"user":"johnatboid11","interval":5,"cancel":false},"authorization":[{"actor":"boidcronjobs","permission":"active"}]}]}'
