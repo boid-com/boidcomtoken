@@ -144,6 +144,8 @@ ACTION boidtoken::transfer(name from, name to, asset quantity, string memo) {
 ACTION boidtoken::stake(name from, name to, asset quantity, uint32_t time_limit, bool use_staked_balance) {
   require_auth(from);
   check(use_staked_balance == false,"use_staked_balance is deprecated and will be removed in the future.");
+  check(time_limit == 0,"time_limit is deprecated and will be removed in the future.");
+
 
   config_t c_t(get_self(), get_self().value);
 
@@ -265,7 +267,6 @@ ACTION boidtoken::claim(name stake_account, float percentage_to_stake, bool issu
   if (!skip_pwr_update) {
     print("boidpower: ",boidpower,"\n");
     print("timediff: ",timediff.count(),"\n");
-    print("if statement: ",timediff.count() > DAY_MICROSEC);
     boidpower = update_boidpower(bp->quantity, 0, timediff.count());
     print("New Boid Power:", boidpower, "\n");
   } else print("skipping power update.\n");
@@ -357,8 +358,8 @@ ACTION boidtoken::closepwr(const name acct, const bool admin_auth) {
   else require_auth(get_self());
   power_t pow_t(get_self(), acct.value);
   auto bp = pow_t.find(acct.value);
-  check(bp == pow_t.end(),"No power row to close for this account.")
-  check(bp->quantity == 0 || bp->total_delegated.amount == 0,"acct has power or delegations, won't close.");
+  check(bp == pow_t.end(),"No power row to close for this account.");
+  check(bp->quantity == 0 || bp->total_delegated.amount == 0,"acct has power or stakes, won't close.");
   pow_t.erase(bp);
 }
 
