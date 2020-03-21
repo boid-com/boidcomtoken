@@ -312,6 +312,7 @@ ACTION boidtoken::claim(name stake_account, float percentage_to_stake, bool issu
 
   wpf_payout = wpf_payout < c_itr->max_wpf_payout ? wpf_payout : c_itr->max_wpf_payout;
   total_payout += stake_payout + wpf_payout;
+  check(total_payout.amount != 0 && !skip_pwr_update, "Account has no power nor stake payouts.");
 
   // Find power bonus and update power and claim parameters
   if (a_itr != accts.end()) {
@@ -334,6 +335,7 @@ string debugStr = "Payout would cause token supply to exceed maximum\nstake acco
         "\nwpf contribution: " + wpf_payout.to_string() + "\nreturning " + expired_received_tokens.to_string() + " expired tokens" + "\nreceiving " + expired_delegated_tokens.to_string() +
         " delegated tokens";
 
+
     if (self_payout.amount != 0) {
       action(permission_level{st.issuer, "active"_n}, get_self(), "issue"_n, std::make_tuple(stake_account, self_payout, memo)).send();
     }
@@ -350,6 +352,8 @@ string debugStr = "Payout would cause token supply to exceed maximum\nstake acco
     if (wpf_payout != zerotokens) {
       action(permission_level{st.issuer, "active"_n}, get_self(), "issue"_n, std::make_tuple(c_itr->worker_proposal_fund_proxy, wpf_payout, memo)).send();
     }
+
+
   }
 }
 
@@ -541,6 +545,7 @@ ACTION boidtoken::updatepower(const name acct, const float boidpower) {
     });
   } else {
     p_t.modify(bp, same_payer, [&](auto &p) {
+      if (p.quantity < 1) p.prev_claim_time = curr_time;
       p.quantity = update_boidpower(p.quantity, boidpower, (curr_time - p.prev_bp_update_time).count());
       p.prev_bp_update_time = curr_time;
       if (p.total_delegated.symbol != sym) p.total_delegated = get_total_delegated(acct, true);
