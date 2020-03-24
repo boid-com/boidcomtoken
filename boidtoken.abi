@@ -14,20 +14,6 @@
             ]
         },
         {
-            "name": "boidpower",
-            "base": "",
-            "fields": [
-                {
-                    "name": "acct",
-                    "type": "name"
-                },
-                {
-                    "name": "quantity",
-                    "type": "float32"
-                }
-            ]
-        },
-        {
             "name": "claim",
             "base": "",
             "fields": [
@@ -42,26 +28,6 @@
                 {
                     "name": "issuer_claim",
                     "type": "bool"
-                }
-            ]
-        },
-        {
-            "name": "clearpwrs",
-            "base": "",
-            "fields": [
-                {
-                    "name": "rows",
-                    "type": "uint32"
-                }
-            ]
-        },
-        {
-            "name": "clearstakes",
-            "base": "",
-            "fields": [
-                {
-                    "name": "rows",
-                    "type": "uint32"
                 }
             ]
         },
@@ -636,24 +602,6 @@
             ]
         },
         {
-            "name": "stakerow",
-            "base": "",
-            "fields": [
-                {
-                    "name": "stake_account",
-                    "type": "name"
-                },
-                {
-                    "name": "staked",
-                    "type": "asset"
-                },
-                {
-                    "name": "auto_stake",
-                    "type": "uint8"
-                }
-            ]
-        },
-        {
             "name": "synctotdel",
             "base": "",
             "fields": [
@@ -738,16 +686,6 @@
         {
             "name": "claim",
             "type": "claim",
-            "ricardian_contract": ""
-        },
-        {
-            "name": "clearpwrs",
-            "type": "clearpwrs",
-            "ricardian_contract": ""
-        },
-        {
-            "name": "clearstakes",
-            "type": "clearstakes",
             "ricardian_contract": ""
         },
         {
@@ -915,13 +853,6 @@
             "key_types": []
         },
         {
-            "name": "boidpowers",
-            "type": "boidpower",
-            "index_type": "i64",
-            "key_names": [],
-            "key_types": []
-        },
-        {
             "name": "delegation",
             "type": "delegations",
             "index_type": "i64",
@@ -945,13 +876,6 @@
         {
             "name": "staked",
             "type": "stake_row",
-            "index_type": "i64",
-            "key_names": [],
-            "key_types": []
-        },
-        {
-            "name": "stakes",
-            "type": "stakerow",
             "index_type": "i64",
             "key_names": [],
             "key_types": []

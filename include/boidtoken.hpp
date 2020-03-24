@@ -111,12 +111,7 @@ CONTRACT boidtoken : public contract {
   
   
   // Temp Dev Actions
-
-  ACTION clearstakes(uint32_t rows);
-  ACTION clearpwrs(uint32_t rows);
   ACTION reclaim(name acct, asset quantity);
-
-
 
   inline float update_boidpower(float bpPrev, float bpNew, float dt);
 
@@ -163,18 +158,7 @@ CONTRACT boidtoken : public contract {
   };
 
   typedef eosio::multi_index<"accounts"_n, account> accounts;
-
-  TABLE boidpower {
-    name acct;
-    float quantity;
-
-    uint64_t primary_key() const { return acct.value; }
-
-    EOSLIB_SERIALIZE(boidpower, (acct)(quantity));
-  };
-
-  typedef eosio::multi_index<"boidpowers"_n, boidpower> boidpowers;
-
+  
   TABLE power {
     name acct;
     float quantity;
@@ -189,18 +173,6 @@ CONTRACT boidtoken : public contract {
 
   typedef eosio::multi_index<"powers"_n, power> power_t;
 
-  // DEPRECATED
-  TABLE stakerow {
-    name stake_account;
-    asset staked;
-    uint8_t auto_stake;  // toggle if we want to unstake stake_account at end of season
-
-    uint64_t primary_key() const { return stake_account.value; }
-
-    EOSLIB_SERIALIZE(stakerow, (stake_account)(staked)(auto_stake));
-  };
-
-  typedef eosio::multi_index<"stakes"_n, stakerow> staketable;
 
   /*!
     stake table

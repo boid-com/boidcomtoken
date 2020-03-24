@@ -208,16 +208,6 @@ ACTION boidtoken::sendmessage(name acct, string memo) {
   print(memo);
 };
 
-ACTION boidtoken::clearstakes(uint32_t rows) {
-  require_auth(get_self());
-  cleanTable<staketable>(get_self(), get_self().value, rows);
-};
-
-ACTION boidtoken::clearpwrs(uint32_t rows) {
-  require_auth(get_self());
-  cleanTable<boidpowers>(get_self(), get_self().value, rows);
-};
-
 ACTION boidtoken::claim(name stake_account, float percentage_to_stake, bool issuer_claim) {
   check(percentage_to_stake == 0,"percentage_to_stake is deprecated: set to 0");
   print(" \n");
@@ -312,7 +302,6 @@ ACTION boidtoken::claim(name stake_account, float percentage_to_stake, bool issu
 
   wpf_payout = wpf_payout < c_itr->max_wpf_payout ? wpf_payout : c_itr->max_wpf_payout;
   total_payout += stake_payout + wpf_payout;
-  check(total_payout.amount != 0 && !skip_pwr_update, "Account has no power nor stake payouts.");
 
   // Find power bonus and update power and claim parameters
   if (a_itr != accts.end()) {
@@ -321,7 +310,8 @@ ACTION boidtoken::claim(name stake_account, float percentage_to_stake, bool issu
     get_power_bonus(start_time, claim_time, boidpower, &power_payout);
 
     total_payout += power_payout;
-
+    
+check(total_payout.amount > 0 && !skip_pwr_update, "Account has no power nor stake payouts.");
 string debugStr = "Payout would cause token supply to exceed maximum\nstake account: " + stake_account.to_string() + "\ntotal payout: " + total_payout.to_string() +
                   "\npower payout: " + power_payout.to_string() + "\nstake payout: " + stake_payout.to_string();
 
@@ -989,7 +979,7 @@ extern "C" {
 [[noreturn]] void apply(uint64_t receiver, uint64_t code, uint64_t action) {
   if (code == receiver) {
     switch (action) {
-      EOSIO_DISPATCH_HELPER(boidtoken, (create)(issue)(recycle)(clearpwrs)(clearstakes)(open)(close)(transfer)(stake)(sendmessage)(claim)(unstake)(initstats)(updatepower)(setpower)(matchtotdel)(
+      EOSIO_DISPATCH_HELPER(boidtoken, (create)(issue)(recycle)(open)(close)(transfer)(stake)(sendmessage)(claim)(unstake)(initstats)(updatepower)(setpower)(matchtotdel)(
                                            synctotdel)(setstakediff)(setpowerdiff)(setpowerrate)(setpwrstkmul)(setminstake)(setmaxpwrstk)(setmaxwpfpay)(setwpfproxy)(
                                            setbpdecay)(setbpmult)(setbpconst)(resetbonus)(resetpowtm)(settotactive)(settotstaked)(reclaim)(closepwr))
     }
