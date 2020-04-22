@@ -310,8 +310,7 @@ ACTION boidtoken::claim(name stake_account, float percentage_to_stake, bool issu
     get_power_bonus(start_time, claim_time, boidpower, &power_payout);
 
     total_payout += power_payout;
-    
-check(total_payout.amount > 0 && !skip_pwr_update, "Account has no power nor stake payouts.");
+
 string debugStr = "Payout would cause token supply to exceed maximum\nstake account: " + stake_account.to_string() + "\ntotal payout: " + total_payout.to_string() +
                   "\npower payout: " + power_payout.to_string() + "\nstake payout: " + stake_payout.to_string();
 
